@@ -9,7 +9,16 @@ FEN-viewer is a Python web application that renders chess board images from posi
 ## Tech Stack
 
 - **Python** with the `python-chess` library for FEN parsing and board representation
+- **Flask** for the web layer
 - **pytest** for testing
+- SVG output via `chess.svg`
+
+## Architecture
+
+Three-module design in `fen_viewer/`:
+- `fen_validation.py` — `validate_fen(fen: str) -> chess.Board`: validates FEN input, raises `ValueError` on invalid input
+- `board_renderer.py` — `render_board_svg(board: chess.Board) -> str`: renders a board to SVG string
+- `app.py` — `create_app() -> Flask`: Flask app factory with routes `GET /` (starting position) and `GET /board?fen=<fen>`
 
 ## Development Approach
 
@@ -29,10 +38,16 @@ This project follows **test-driven development (TDD)**. Write comprehensive test
 pytest
 
 # Run a single test file
-pytest tests/test_example.py
+pytest tests/test_fen_validation.py
 
 # Run a single test
-pytest tests/test_example.py::test_function_name
+pytest tests/test_fen_validation.py::TestValidFEN::test_starting_position
+
+# Install dependencies
+pip install -e ".[dev]"
+
+# Run the dev server
+flask --app fen_viewer.app run
 
 # Run tests with verbose output
 pytest -v

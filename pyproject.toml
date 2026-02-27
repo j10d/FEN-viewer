@@ -1,0 +1,14 @@
+[project]
+name = "fen-viewer"
+version = "0.1.0"
+description = "A web application that renders chess board images from FEN notation"
+requires-python = ">=3.10"
+dependencies = [
+    "chess",
+    "flask",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]

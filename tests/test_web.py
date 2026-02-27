@@ -33,8 +33,37 @@ class TestBoardEndpoint:
         assert response.status_code == 400
 
 
-class TestDefaultEndpoint:
-    def test_root_returns_starting_position(self, client: FlaskClient) -> None:
+class TestIndexPage:
+    def test_index_returns_html(self, client: FlaskClient) -> None:
         response = client.get("/")
         assert response.status_code == 200
+        assert "text/html" in response.content_type
+
+    def test_index_contains_chess_board(self, client: FlaskClient) -> None:
+        response = client.get("/")
         assert b"<svg" in response.data
+
+    def test_index_contains_fen_input(self, client: FlaskClient) -> None:
+        response = client.get("/")
+        assert b"<input" in response.data
+
+    def test_index_input_prefilled_with_starting_fen(self, client: FlaskClient) -> None:
+        response = client.get("/")
+        assert STARTING_FEN.encode() in response.data
+
+    def test_index_contains_submit_button(self, client: FlaskClient) -> None:
+        response = client.get("/")
+        html = response.data.decode()
+        assert "submit" in html.lower() or "Submit" in html
+
+    def test_index_contains_reset_button(self, client: FlaskClient) -> None:
+        response = client.get("/")
+        html = response.data.decode()
+        assert "reset" in html.lower() or "Reset" in html
+
+    def test_index_contains_default_fen_in_script(self, client: FlaskClient) -> None:
+        """The page JS should include the starting FEN so the reset button can use it."""
+        response = client.get("/")
+        html = response.data.decode()
+        assert "<script" in html
+        assert STARTING_FEN in html

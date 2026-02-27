@@ -46,8 +46,11 @@ pytest tests/test_fen_validation.py::TestValidFEN::test_starting_position
 # Install dependencies
 pip install -e ".[dev]"
 
-# Run the dev server
+# Run the dev server (localhost only)
 flask --app fen_viewer.app run
+
+# Run the dev server for remote access via Tailscale (bind to Tailscale interface only)
+flask --app fen_viewer.app run --host $(tailscale ip -4)
 
 # Run tests with verbose output
 pytest -v
